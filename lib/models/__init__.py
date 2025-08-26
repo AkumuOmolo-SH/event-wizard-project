@@ -1,9 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+import sqlite3
 
-engine = create_engine("sqlite:///event_wizard.db")
+CONN = sqlite3.connect('event_wizard.db')
+CURSOR = CONN.cursor()
 
-Session=sessionmaker(bind=engine)
-session=Session()
 
-Base=declarative_base
+
+

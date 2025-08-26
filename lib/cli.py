@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+from sqlite3 import connect
 
 from helpers import (
     exit_program,
@@ -18,15 +21,16 @@ from helpers import (
     update_attendee,
     delete_attendee,
     create_attendee,
-    
-    
+
+
 )
+
 
 def main():
     while True:
         menu()
         choice = input("> ")
-        
+
         # Exit
         if choice == "0":
             exit_program()
@@ -90,6 +94,7 @@ def menu():
     print("15. Create attendee")
     print("16. Update attendee")
     print("17. Delete attendee")
+
 
 if __name__ == "__main__":
     main()

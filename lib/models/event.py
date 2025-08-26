@@ -1,6 +1,7 @@
 from models.__init__ import CURSOR, CONN
 from models.location import Location
 
+
 class Event:
 
     all = {}
@@ -12,11 +13,11 @@ class Event:
         self.location_id = location_id
 
     def __repr__(self):
-        return(
+        return (
             f"<Event {self.id}: {self.name}, {self.tickets_sold} " +
             f"Location ID: , {self.location_id}>"
         )
-    
+
     @property
     def name(self):
         return self._name
@@ -36,13 +37,13 @@ class Event:
 
     @tickets_sold.setter
     def tickets_sold(self, value):
-        if not isinstance(value, int) or value <0:
+        if not isinstance(value, int) or value < 0:
             raise ValueError("Tickets sold must be a number")
         self._tickets_sold = value
 
     @classmethod
     def create_table(cls):
-        
+
         sql = """
             CREATE TABLE IF NOT EXISTS events (
             id INTEGER PRIMARY KEY,
@@ -56,7 +57,7 @@ class Event:
 
     @classmethod
     def drop_table(cls):
-        
+
         sql = """
             DROP TABLE IF EXISTS events;
         """
@@ -64,7 +65,7 @@ class Event:
         CONN.commit()
 
     def save(self):
-       
+
         sql = """
                 INSERT INTO events (name, tickets_sold, location_id)
                 VALUES (?, ?, ?)
@@ -77,7 +78,7 @@ class Event:
         type(self).all[self.id] = self
 
     def update(self):
-        
+
         sql = """
             UPDATE events
             SET name = ?, tickets_sold = ?, location_id = ?
@@ -103,7 +104,7 @@ class Event:
 
     @classmethod
     def create(cls, name, tickets_sold, location_id):
-        
+
         event = cls(name, tickets_sold, location_id)
         event.save()
         return event
@@ -155,6 +156,3 @@ class Event:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
-
-        
-              
