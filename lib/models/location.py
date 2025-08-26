@@ -9,7 +9,7 @@ class Location:
 
     all = {}
 
-    def __init__(self, id, name, capacity, num_bars=0, num_toilets=0):
+    def __init__(self, name, capacity, num_bars=0, num_toilets=0, id=None):
         self.id = id
         self.name = name
         self.capacity = capacity
@@ -74,9 +74,17 @@ class Location:
         CONN.commit()
 
     @classmethod
+    def drop_table(cls):
+        sql = """
+            DROP TABLE IF EXISTS locations;
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
+    
     def save(self):
         sql = """
-            INSERT INTO departments (name, capacity, num_bars, num_toilets)
+            INSERT INTO locations (name, capacity, num_bars, num_toilets)
             VALUES (?, ?, ?, ?)
          """
 
@@ -88,9 +96,10 @@ class Location:
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, capacity, num_bars, num_toilets):
+    def create(cls, name, capacity, num_bars=0, num_toilets=0):
         location = cls(name, capacity, num_bars, num_toilets)
         location.save()
+        return location
 
     def update(self):
         sql = """
@@ -148,5 +157,19 @@ class Location:
         
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    def events(self):
+        from models.event import Event
+        sql = """
+            SELECT * FROM events
+            WHERE location_id = ?
+        """
+
+        CURSOR.execute(sql, (self.id,),)
+
+        rows = CURSOR.fetchall()
+        return [
+            Event.instance_from_db(row) for row in rows
+        ]
 
 
