@@ -5,7 +5,7 @@ class Event:
 
     all = {}
 
-    def _init__(self, name, tickets_sold, location_id, id=None):
+    def __init__(self, name, tickets_sold, location_id, id=None):
         self.id = id
         self.name = name
         self.tickets_sold = tickets_sold
@@ -37,7 +37,7 @@ class Event:
     @tickets_sold.setter
     def tickets_sold(self, value):
         if not isinstance(value, int) or value <0:
-            raise ValueError("job_title must be a non-empty string")
+            raise ValueError("Tickets sold must be a number")
         self._tickets_sold = value
 
     @classmethod
