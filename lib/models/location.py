@@ -158,7 +158,7 @@ class Location:
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
     
-    def events(self):
+    def list_location_events(self):
         from models.event import Event
         sql = """
             SELECT * FROM events
