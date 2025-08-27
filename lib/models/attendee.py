@@ -1,7 +1,7 @@
 
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
-from event_wizard_db import Base
+from sqlalchemy.orm import relationship, validates
+from lib.event_wizard_db import Base
 
 
 class Attendee(Base):
@@ -14,8 +14,26 @@ class Attendee(Base):
     checked_in = Column(Boolean, default=False)
     event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
 
-    # Relationship back to Event (optional, depends on your Event model)
+  
     event = relationship("Event", back_populates="attendees")
 
     def __repr__(self):
-        return f"<Attendee {self.id}: {self.sex}, Age: {self.age}, Checked in: {self.checked_in}, Event ID: {self.event_id}>"
+        return f"<Attendee {self.id}: {self.sex}, Age: {self.age},Ticket Price: KSh{self.ticket_price}, Checked in: {self.checked_in}, Event ID: {self.event_id}>"
+    
+    @validates("sex")
+    def validate_sex(self, key, value):
+        if value not in ("M", "F", "Other"):
+            raise ValueError("Sex must be 'M', 'F', or 'Other'")
+        return value
+
+    @validates("age")
+    def validate_age(self, key, value):
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError("Age must be a positive number")
+        return value
+
+    @validates("ticket_price")
+    def validate_price(self, key, value):
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError("Ticket price must be a number in KSh")
+        return value 

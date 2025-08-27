@@ -1,7 +1,10 @@
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from event_wizard_db import Base
+from lib.event_wizard_db import Base
+from sqlalchemy.orm import validates
+
+
 
 class Location(Base):
     __tablename__ = "locations"
@@ -19,3 +22,21 @@ class Location(Base):
             f"<Location(name='{self.name}', capacity={self.capacity}, "
             f"bars={self.num_bars}, toilets={self.num_toilets})>"
         )
+
+    @validates("name")
+    def validate_name(self, key, value):
+        if not value or not value.strip():
+            raise ValueError("Location name cannot be empty")
+        return value.strip()
+
+    @validates("capacity")
+    def validate_capacity(self, key, value):
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError("Capacity must be a positive integer")
+        return value
+
+    @validates("num_bars", "num_toilets")
+    def validate_non_negative(self, key, value):
+        if value < 0:
+            raise ValueError(f"{key} cannot be negative")
+        return value
