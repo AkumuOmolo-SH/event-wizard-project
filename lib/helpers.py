@@ -91,6 +91,28 @@ def delete_event(event_id):
     else:
         print(f"Event {event_id} not found")
 
+def get_event_suggestions(expected_attendees, session):
+    locations = Location.suggest_location(expected_attendees, session)
+    staff = Safety.suggest_staff(expected_attendees)
+
+    print(f"For your expected attendees: {expected_attendees}")
+    print("\nSuggested locations:")
+    for loc in locations:
+        print(f"- {loc.name} (capacity {loc.capacity})")
+
+    print("\nRecommended staff:")
+    print(f"- Security staff: {staff['security_staff']}")
+    print(f"- Nurses: {staff['nurses']}")
+    print(f"- Ambulances: {staff['ambulances']}")
+
+def show_best_selling_event():
+    top_event = Event.best_selling_event()
+    if top_event:
+        print(f"Best selling event: {top_event.name} with {top_event.tickets_sold} tickets sold")
+    else:
+        print("No events found.")
+
+
 
 #ATTENDEE
 
