@@ -5,7 +5,6 @@ from lib.event_wizard_db import Base
 from sqlalchemy.orm import validates
 
 
-
 class Location(Base):
     __tablename__ = "locations"
 
@@ -16,12 +15,7 @@ class Location(Base):
     num_toilets = Column(Integer, default=0)
 
     events = relationship("Event", back_populates="location")
-
-    def __repr__(self):
-        return (
-            f"<Location(name='{self.name}', capacity={self.capacity}, "
-            f"bars={self.num_bars}, toilets={self.num_toilets})>"
-        )
+   
 
     @validates("name")
     def validate_name(self, key, value):
@@ -40,3 +34,16 @@ class Location(Base):
         if value < 0:
             raise ValueError(f"{key} cannot be negative")
         return value
+
+    @classmethod
+    def suggest_location(cls, expected_attendees, session):
+        return session.query(cls).filter(cls.capacity >= expected_attendees).all()
+    
+    def __repr__(self):
+        return (
+            f"<Location(name='{self.name}', capacity={self.capacity}, "
+            f"bars={self.num_bars}, toilets={self.num_toilets})>"
+        )
+
+
+  

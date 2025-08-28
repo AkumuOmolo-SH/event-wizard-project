@@ -1,7 +1,11 @@
-import sqlite3
 
-CONN = sqlite3.connect('event_wizard.db')
-CURSOR = CONN.cursor()
+from .event import Event
+from .attendee import Attendee
+from .location import Location
+from .safety import Safety
+
+
+
 
 
 
