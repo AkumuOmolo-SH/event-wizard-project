@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from lib.helpers import (
     list_locations, find_location_by_id, find_location_by_name,
-    create_location, update_location, delete_location,
+    create_location, choose_location, update_location, delete_location,
     list_events, find_event_by_id, find_event_by_name,
     create_event, update_event, delete_event,
     list_safety, create_safety, update_safety, delete_safety, find_safety_by_event_id,
@@ -9,15 +9,19 @@ from lib.helpers import (
     show_best_selling_event,
     exit_program
 )
-from lib.models import Event
 from lib.event_wizard_db import session
+from lib.models.event import Event
 
 
 def main_menu():
-    print("\n--- Event Wizard CLI ---")
+    print("\n--- EVENT WIZARD CLI ---")
+    print("\n Navigation Instructions:")
+    print("Use the numbers in the menu to select an option. Press enter to confirm.")
+    print("\n--- Main Menu ---")
+
     print("1. Locations")
     print("2. Events")
-    print("3. Safety Measures")
+    print("3. Safety")
     print("4. Quick Actions")
     print("0. Exit")
 
@@ -30,7 +34,7 @@ def location_menu():
     print("4. Create a location")
     print("5. Update a location")
     print("6. Delete a location")
-    print("0. Back")
+    print("0. Back to main menu")
 
 
 def event_menu():
@@ -42,25 +46,28 @@ def event_menu():
     print("5. Update an event")
     print("6. Delete an event")
     print("7. Show best-selling event")
-    print("0. Back")
+    print("0. Back to main menu")
 
 
 def safety_menu():
-    print("\n --- Safety Measures Menu ---")
+    print("\n--- Safety Measures Menu ---")
     print("1. List safety measures for all events")
-    print("2. New safety measure")
-    print("3. Find safety measure by event")
-    print("4. Update a safety measure")
-    print("5. Delete a safety measure")
-    print("0. Back")
+    print("2. Create new safety measure")
+    print("3. Update safety measure")
+    print("4. Delete safety measure")
+    print("5. Find safety measure by event")
+    print("0. Back to main menu")
 
 
 def helpers_menu():
-    print("\n--- Quick Actions ---")
+    print("\n--- Quick Suggestions ---")
     print("1. Suggest location for expected attendees")
     print("2. Show attendees per event")
-    print("3. Show best-selling event")
-    print("0. Back")
+    print("0. Back to main menu")
+
+
+def pause():
+    input("\nPress Enter to return to the main menu")
 
 
 def main():
@@ -71,105 +78,106 @@ def main():
         if choice == "0":
             exit_program()
 
-        elif choice == "1":
+        elif choice == "1":  # Location
             while True:
                 location_menu()
-                loc_choice = input("> ").strip()
+                loc_choice = input("Enter number from menu... ").strip()
                 if loc_choice == "0":
                     break
                 elif loc_choice == "1":
                     list_locations()
+                    pause()
                 elif loc_choice == "2":
                     find_location_by_name()
+                    pause()
                 elif loc_choice == "3":
                     find_location_by_id()
+                    pause()
                 elif loc_choice == "4":
                     create_location()
+                    pause()
                 elif loc_choice == "5":
                     update_location()
+                    pause()
                 elif loc_choice == "6":
                     delete_location()
+                    pause()
                 else:
                     print("Invalid choice")
 
-        elif choice == "2":
+        elif choice == "2":  # Events
             while True:
                 event_menu()
-                ev_choice = input("> ").strip()
+                ev_choice = input("Enter number from menu... ").strip()
                 if ev_choice == "0":
                     break
                 elif ev_choice == "1":
                     list_events()
+                    pause()
                 elif ev_choice == "2":
                     find_event_by_name()
+                    pause()
                 elif ev_choice == "3":
                     find_event_by_id()
+                    pause()
                 elif ev_choice == "4":
                     create_event()
+                    pause()
                 elif ev_choice == "5":
                     update_event()
+                    pause()
                 elif ev_choice == "6":
                     delete_event()
+                    pause()
                 elif ev_choice == "7":
-                    top_event = show_best_selling_event()
-                    if top_event:
-                        print(
-                            f"Best-selling event: {top_event.name} ({top_event.tickets_sold} tickets sold)")
-                    else:
-                        print("No events found.")
+                    show_best_selling_event()
+                    pause()
                 else:
                     print("Invalid choice")
 
-        elif choice == "3":
+        elif choice == "3":  # Safety
             while True:
                 safety_menu()
-                saf_choice = input("Select:").strip()
+                saf_choice = input("Enter number from menu... ").strip()
                 if saf_choice == "0":
                     break
-                if saf_choice == "1":
+                elif saf_choice == "1":
                     list_safety()
+                    pause()
                 elif saf_choice == "2":
                     create_safety()
+                    pause()
                 elif saf_choice == "3":
-                    find_safety_by_event_id()
-                elif saf_choice == "4":
                     update_safety()
-                elif saf_choice == "5":
+                    pause()
+                elif saf_choice == "4":
                     delete_safety()
+                    pause()
+                elif saf_choice == "5":
+                    find_safety_by_event_id()
+                    pause()
                 else:
                     print("Invalid choice")
 
-        elif choice == "4":
+        elif choice == "4":  # Helpers
             while True:
                 helpers_menu()
-
-                help_choice = input("Select:").strip()
+                help_choice = input("Enter number from menu... ").strip()
                 if help_choice == "0":
                     break
-
                 elif help_choice == "1":
                     tickets = input("Enter expected tickets: ")
                     try:
                         tickets = int(tickets)
-                        suggested = suggest_location_for_attendees(tickets)
-                        if suggested:
-                            print(f"Suggested locations: {suggested}")
-
+                        loc = suggest_location_for_attendees(tickets)
+                        if loc:
+                            print(f"Suggested location: {loc}")
                         else:
-                            print("No suitable location")
+                            print(
+                                "No location can accommodate this number of attendees.")
                     except ValueError:
-                        print("Please enter another number")
-
-                # elif help_choice == "2":
-
-                #     tickets = input("Enter expected tickets sold: ")
-                #     try:
-                #         tickets = int(tickets)
-                #         staff = suggest_staff(tickets)
-                #         print(f"Suggested staff: {staff}")
-                #     except ValueError:
-                #         print("Please enter a valid number")
-
+                        print("Please enter a valid number")
+                    pause()
                 elif help_choice == "2":
                     events = session.query(Event).all()
                     if events:
@@ -177,10 +185,7 @@ def main():
                             print(f"{e.name}: {e.tickets_sold} tickets sold")
                     else:
                         print("No events found.")
-
-                elif help_choice == "3":
-                    show_best_selling_event()
-
+                    pause()
                 else:
                     print("Invalid choice")
 
