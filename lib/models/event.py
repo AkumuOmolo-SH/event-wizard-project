@@ -12,7 +12,7 @@ class Event(Base):
     tickets_sold = Column(Integer, default=0)
     location_id = Column(Integer, ForeignKey("locations.id"))
 
-    attendees = relationship("Attendee", back_populates="event")   
+
     location = relationship("Location", back_populates="events")
     safety = relationship("Safety", back_populates="event", uselist=False)
  
