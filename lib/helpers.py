@@ -1,13 +1,12 @@
-
 from .event_wizard_db import session
 from lib.models.location import Location
 from lib.models.event import Event
-from lib.models.attendee import Attendee
 from lib.models.safety import Safety
 import sys
 from sqlalchemy import func
 
-# LOCATION 
+# LOCATION
+
 
 def list_locations():
     locations = session.query(Location).all()
@@ -38,7 +37,8 @@ def create_location():
     capacity = int(input("Enter location capacity: "))
     num_bars = int(input("Enter number of bars (default 0): ") or 0)
     num_toilets = int(input("Enter number of toilets (default 0): ") or 0)
-    loc = Location(name=name, capacity=capacity, num_bars=num_bars, num_toilets=num_toilets)
+    loc = Location(name=name, capacity=capacity,
+                   num_bars=num_bars, num_toilets=num_toilets)
     session.add(loc)
     session.commit()
     print(f"Created location: {loc}")
@@ -54,9 +54,12 @@ def update_location():
         num_toilets = input(f"Number of toilets ({loc.num_toilets}): ")
 
         loc.name = name
-        if capacity: loc.capacity = int(capacity)
-        if num_bars: loc.num_bars = int(num_bars)
-        if num_toilets: loc.num_toilets = int(num_toilets)
+        if capacity:
+            loc.capacity = int(capacity)
+        if num_bars:
+            loc.num_bars = int(num_bars)
+        if num_toilets:
+            loc.num_toilets = int(num_toilets)
 
         session.commit()
         print(f"Updated location: {loc}")
@@ -75,7 +78,7 @@ def delete_location():
         print(f"Location {location_id} not found")
 
 
-# EVENT 
+# EVENT
 
 def list_events():
     events = session.query(Event).all()
@@ -103,12 +106,48 @@ def find_event_by_name():
 
 def create_event():
     name = input("Enter event name: ")
+
+    location_id = choose_location()
+    if not location_id:
+        print("No valid location selected. Event not created.")
+        return
+
+    
+    location = session.query(Location).get(location_id)
+
+    
     tickets_sold = int(input("Enter tickets sold: "))
-    location_id = int(input("Enter location ID: "))
+
+    
+    if tickets_sold > location.capacity:
+        print(f" Warning: Tickets sold-({tickets_sold}) exceed location capacity-({location.capacity})")
+
+    
     event = Event(name=name, tickets_sold=tickets_sold, location_id=location_id)
+
     session.add(event)
     session.commit()
     print(f"Created event: {event}")
+
+
+def choose_location():
+    locations = session.query(Location).all()
+    if not locations:
+        print("No locations available.")
+        return None
+
+    location_choices = ", ".join(
+        [f"{loc.id}: {loc.name}" for loc in locations])
+    while True:
+        try:
+            location_id = int(
+                input(f"Enter location ID ({location_choices}): "))
+            if any(loc.id == location_id for loc in locations):
+                return location_id
+            else:
+                print("Invalid ID. Please choose from the list.")
+        except ValueError:
+            print("Please enter an available ID number.")
 
 
 def update_event():
@@ -120,8 +159,10 @@ def update_event():
         location_id = input(f"Location ID ({event.location_id}): ")
 
         event.name = name
-        if tickets_sold: event.tickets_sold = int(tickets_sold)
-        if location_id: event.location_id = int(location_id)
+        if tickets_sold:
+            event.tickets_sold = int(tickets_sold)
+        if location_id:
+            event.location_id = int(location_id)
 
         session.commit()
         print(f"Updated event: {event}")
@@ -143,78 +184,13 @@ def delete_event():
 def show_best_selling_event():
     top_event = Event.best_selling_event()
     if top_event:
-        print(f"Best selling event: {top_event.name} with {top_event.tickets_sold} tickets sold")
+        print(
+            f"Best selling event: {top_event.name} with {top_event.tickets_sold} tickets sold")
     else:
         print("No events found.")
 
 
-#  ATTENDEE 
-
-def list_attendees():
-    attendees = session.query(Attendee).all()
-    for a in attendees:
-        print(a)
-
-
-def find_attendee_by_id():
-    attendee_id = int(input("Enter attendee ID: "))
-    a = session.get(Attendee, attendee_id)
-    if a:
-        print(a)
-    else:
-        print(f"Attendee {attendee_id} not found")
-
-
-def find_attendees_by_sex():
-    sex = input("Enter sex (M/F): ")
-    attendees = session.query(Attendee).filter(Attendee.sex == sex).all()
-    if attendees:
-        for a in attendees:
-            print(a)
-    else:
-        print(f"No attendees with sex '{sex}' found")
-
-
-def create_attendee():
-    sex = input("Enter sex (M/F): ")
-    ticket_price = float(input("Enter ticket price: "))
-    event_id = int(input("Enter event ID: "))
-    attendee = Attendee(sex=sex, ticket_price=ticket_price, event_id=event_id)
-    session.add(attendee)
-    session.commit()
-    print(f"Created attendee: {attendee}")
-
-
-def update_attendee():
-    attendee_id = int(input("Enter attendee ID to update: "))
-    a = session.get(Attendee, attendee_id)
-    if a:
-        sex = input(f"New sex ({a.sex}): ") or a.sex
-        ticket_price = input(f"Ticket price ({a.ticket_price}): ")
-        event_id = input(f"Event ID ({a.event_id}): ")
-
-        a.sex = sex
-        if ticket_price: a.ticket_price = float(ticket_price)
-        if event_id: a.event_id = int(event_id)
-
-        session.commit()
-        print(f"Updated attendee: {a}")
-    else:
-        print(f"Attendee {attendee_id} not found")
-
-
-def delete_attendee():
-    attendee_id = int(input("Enter attendee ID to delete: "))
-    a = session.get(Attendee, attendee_id)
-    if a:
-        session.delete(a)
-        session.commit()
-        print(f"Deleted attendee {attendee_id}")
-    else:
-        print(f"Attendee {attendee_id} not found")
-
-
-# SAFETY 
+# SAFETY
 
 def list_safety():
     rules = session.query(Safety).all()
@@ -223,39 +199,41 @@ def list_safety():
 
 
 def create_safety():
-    location_id = int(input("Enter location ID: "))
+    event_id = int(input("Enter Event ID: "))
     trained_staff = int(input("Enter trained staff count: "))
     ambulances = int(input("Enter number of ambulances: "))
     nurses = int(input("Enter number of nurses: "))
-    rule = Safety(location_id=location_id, trained_staff=trained_staff, ambulances=ambulances, nurses=nurses)
+    rule = Safety(event_id=event_id, trained_staff=trained_staff,
+                  ambulances=ambulances, nurses=nurses)
     session.add(rule)
     session.commit()
     print(f"Created safety rule: {rule}")
 
 
-def find_safety_by_location():
-    location_id = int(input("Enter location ID: "))
-    rule = session.query(Safety).filter(Safety.location_id == location_id).first()
+def find_safety_by_event_id():
+    event_id = int(input("Enter location ID: "))
+    rule = session.query(Safety).filter(Safety.event_id == event_id).first()
     if rule:
         print(rule)
     else:
-        print(f"No safety info for location {location_id}")
+        print(f"No safety info for location {event_id}")
 
-def get_safety_for_event(event_id):
-    rules = session.query(Safety).filter(Safety.event_id == event_id).all()
-    if rules:
-        for r in rules:
-            print(r)
-    else:
-        print(f"No safety info for event {event_id}")
 
+# def get_safety_for_event(event_id):
+#     rules = session.query(Safety).filter(Safety.event_id == event_id).all()
+#     if rules:
+#         for r in rules:
+#             print(r)
+#     else:
+#         print(f"No safety info for event {event_id}")
 
 
 # SUGGESTIONS
 
 def suggest_location_and_safety():
-    capacity = int(input("Enter expected attendees: "))
-    suitable_locations = [loc for loc in session.query(Location).all() if loc.capacity >= capacity]
+    capacity = int(input("Enter ticket sales: "))
+    suitable_locations = [loc for loc in session.query(
+        Location).all() if loc.capacity >= capacity]
 
     if not suitable_locations:
         print("No location can handle this capacity.")
@@ -270,9 +248,8 @@ def suggest_location_and_safety():
     print(f"Required ambulances: {ambulances}")
 
 
-# EXIT 
+# EXIT
 
 def exit_program():
     print("Exited Event Wizard. Goodbye!")
     sys.exit()
-
