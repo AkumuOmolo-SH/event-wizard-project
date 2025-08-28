@@ -4,22 +4,21 @@ from lib.helpers import (
     create_location, update_location, delete_location,
     list_events, find_event_by_id, find_event_by_name,
     create_event, update_event, delete_event,
-    list_attendees, find_attendee_by_id,
-    create_attendee, update_attendee, delete_attendee,
-    suggest_location_and_safety, 
-    # suggest_staff, 
-    # best_selling_event,
-    # attendees_per_event,
-    #  get_safety_for_event, 
+    list_safety, create_safety, find_safety_by_event_id,
+    suggest_location_and_safety,
+    suggest_staff,
+    show_best_selling_event,
     exit_program
 )
+from lib.models import Event
+from lib.event_wizard_db import session
 
 
 def main_menu():
     print("\n--- Event Wizard CLI ---")
     print("1. Locations")
     print("2. Events")
-    print("3. Attendees")
+
     print("4. Helpers / Suggestions")
     print("0. Exit")
 
@@ -47,14 +46,12 @@ def event_menu():
     print("0. Back")
 
 
-def attendee_menu():
-    print("\n--- Attendees Menu ---")
-    print("1. List all attendees")
-    print("2. Find attendee by ID")
-    print("3. Create an attendee")
-    print("4. Update an attendee")
-    print("5. Delete an attendee")
-    print("0. Back")
+def safety_menu():
+    print("\n --- Safety Measures Menu ---")
+    print("1. List safety measures for all events")
+    print("2. New safety measure")
+    print("3. Find safety measure by event")
+
 
 
 def helpers_menu():
@@ -62,13 +59,14 @@ def helpers_menu():
     print("1. Suggest location for expected attendees")
     print("2. Suggest staff for expected attendees")
     print("3. Show attendees per event")
+    print("4. Show best-selling event")
     print("0. Back")
 
 
 def main():
     while True:
         main_menu()
-        choice = input("> ").strip()
+        choice = input("Select a number: ").strip()
 
         if choice == "0":
             exit_program()
@@ -113,9 +111,10 @@ def main():
                 elif ev_choice == "6":
                     delete_event()
                 elif ev_choice == "7":
-                    top_event = best_selling_event()
+                    top_event = show_best_selling_event()
                     if top_event:
-                        print(f"Best-selling event: {top_event.name} ({top_event.tickets_sold} tickets sold)")
+                        print(
+                            f"Best-selling event: {top_event.name} ({top_event.tickets_sold} tickets sold)")
                     else:
                         print("No events found.")
                 else:
@@ -123,50 +122,68 @@ def main():
 
         elif choice == "3":
             while True:
-                attendee_menu()
-                att_choice = input("> ").strip()
-                if att_choice == "0":
+                safety_menu()
+                saf_choice = input("Select:").strip()
+                if saf_choice == "0":
                     break
-                elif att_choice == "1":
-                    list_attendees()
-                elif att_choice == "2":
-                    find_attendee_by_id()
-                elif att_choice == "3":
-                    create_attendee()
-                elif att_choice == "4":
-                    update_attendee()
-                elif att_choice == "5":
-                    delete_attendee()
+                if saf_choice == "1":
+                    list_safety()
+                elif saf_choice == "2":
+                    create_safety()
+                elif saf_choice == "3":
+                    find_safety_by_event_id()
                 else:
                     print("Invalid choice")
+
+                    
+
 
         elif choice == "4":
             while True:
                 helpers_menu()
-                help_choice = input("> ").strip()
+                
+                help_choice = input("Select:").strip()
                 if help_choice == "0":
                     break
+
                 elif help_choice == "1":
-                    attendees = input("Enter expected number of attendees: ")
+                    tickets = input("Enter expected tickets: ")
                     try:
-                        attendees = int(attendees)
-                        suggested = suggest_location(attendees)
-                        print(f"Suggested locations: {suggested}")
+                        tickets = int(tickets)
+                        suggested = suggest_location_and_safety(tickets)
+                        if suggested:
+                            print(f"Suggested locations: {suggested}")
+                            print(f"Required security staff: {suggested['security_staff']}")
+                            print(f"Required ambulances: {suggested['ambulances']}")
+                        else:
+                             print("No suitable location")
                     except ValueError:
-                        print("Please enter a valid number")
+                        print("Please enter another number")
+
                 elif help_choice == "2":
-                    attendees = input("Enter expected number of attendees: ")
+                    
+                    tickets = input("Enter expected tickets sold: ")
                     try:
-                        attendees = int(attendees)
-                        staff = suggest_staff(attendees)
+                        tickets = int(tickets)
+                        staff = suggest_staff(tickets)
                         print(f"Suggested staff: {staff}")
                     except ValueError:
                         print("Please enter a valid number")
-                elif help_choice == "3":
-                    attendees_per_event()
-                else:
-                    print("Invalid choice")
 
+                elif help_choice == "3":
+                    events = session.query(Event).all()
+                    if events:
+                        for e in events:
+                            print(f"{e.name}: {e.tickets_sold} tickets sold")
+                    else:
+                        print("No events found.")
+
+                elif help_choice == "4":
+                    show_best_selling_event()
+
+                else:                
+                    print("Invalid choice")
+  
         else:
             print("Invalid choice")
 

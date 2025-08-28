@@ -112,18 +112,16 @@ def create_event():
         print("No valid location selected. Event not created.")
         return
 
-    
     location = session.query(Location).get(location_id)
 
-    
     tickets_sold = int(input("Enter tickets sold: "))
 
-    
     if tickets_sold > location.capacity:
-        print(f" Warning: Tickets sold-({tickets_sold}) exceed location capacity-({location.capacity})")
+        print(
+            f" Warning: Tickets sold-({tickets_sold}) exceed location capacity-({location.capacity})")
 
-    
-    event = Event(name=name, tickets_sold=tickets_sold, location_id=location_id)
+    event = Event(name=name, tickets_sold=tickets_sold,
+                  location_id=location_id)
 
     session.add(event)
     session.commit()
@@ -219,33 +217,23 @@ def find_safety_by_event_id():
         print(f"No safety info for location {event_id}")
 
 
-# def get_safety_for_event(event_id):
-#     rules = session.query(Safety).filter(Safety.event_id == event_id).all()
-#     if rules:
-#         for r in rules:
-#             print(r)
-#     else:
-#         print(f"No safety info for event {event_id}")
-
-
 # SUGGESTIONS
 
-def suggest_location_and_safety():
-    capacity = int(input("Enter ticket sales: "))
-    suitable_locations = [loc for loc in session.query(
-        Location).all() if loc.capacity >= capacity]
+def suggest_location(expected_attendees):
+    """Suggest the smallest location that can fit the expected attendees."""
+    locations = session.query(Location).order_by(Location.capacity).all()
+    for loc in locations:
+        if loc.capacity >= expected_attendees:
+            return loc
+    return None
 
-    if not suitable_locations:
-        print("No location can handle this capacity.")
-        return
 
-    suggested_location = suitable_locations[0]
-    security_staff = max(25, capacity // 200)
-    ambulances = max(5, capacity // 500)
+def suggest_staff(expected_attendees):
+    """Suggest staff requirements based on expected attendees."""
+    security_staff = max(15, expected_attendees // 900)  # example: 1 guard per 100
+    ambulances = max(1, expected_attendees // 500)     # example: 1 ambulance per 500
+    return {"security_staff": security_staff, "ambulances": ambulances}
 
-    print(f"Suggested location: {suggested_location.name}")
-    print(f"Required security staff: {security_staff}")
-    print(f"Required ambulances: {ambulances}")
 
 
 # EXIT
