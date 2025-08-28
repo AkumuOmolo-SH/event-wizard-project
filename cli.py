@@ -5,8 +5,7 @@ from lib.helpers import (
     list_events, find_event_by_id, find_event_by_name,
     create_event, update_event, delete_event,
     list_safety, create_safety, find_safety_by_event_id,
-    suggest_location_and_safety,
-    suggest_staff,
+    suggest_location_for_attendees,
     show_best_selling_event,
     exit_program
 )
@@ -18,8 +17,8 @@ def main_menu():
     print("\n--- Event Wizard CLI ---")
     print("1. Locations")
     print("2. Events")
-
-    print("4. Helpers / Suggestions")
+    print("3. Safety Measures")
+    print("4. Quick Actions")
     print("0. Exit")
 
 
@@ -51,15 +50,14 @@ def safety_menu():
     print("1. List safety measures for all events")
     print("2. New safety measure")
     print("3. Find safety measure by event")
-
+    print("0. Back")
 
 
 def helpers_menu():
-    print("\n--- Quick Suggestions ---")
+    print("\n--- Quick Actions ---")
     print("1. Suggest location for expected attendees")
-    print("2. Suggest staff for expected attendees")
-    print("3. Show attendees per event")
-    print("4. Show best-selling event")
+    print("2. Show attendees per event")
+    print("3. Show best-selling event")
     print("0. Back")
 
 
@@ -136,8 +134,6 @@ def main():
                     print("Invalid choice")
 
                     
-
-
         elif choice == "4":
             while True:
                 helpers_menu()
@@ -150,27 +146,26 @@ def main():
                     tickets = input("Enter expected tickets: ")
                     try:
                         tickets = int(tickets)
-                        suggested = suggest_location_and_safety(tickets)
+                        suggested = suggest_location_for_attendees(tickets)
                         if suggested:
                             print(f"Suggested locations: {suggested}")
-                            print(f"Required security staff: {suggested['security_staff']}")
-                            print(f"Required ambulances: {suggested['ambulances']}")
+ 
                         else:
                              print("No suitable location")
                     except ValueError:
                         print("Please enter another number")
 
-                elif help_choice == "2":
+                # elif help_choice == "2":
                     
-                    tickets = input("Enter expected tickets sold: ")
-                    try:
-                        tickets = int(tickets)
-                        staff = suggest_staff(tickets)
-                        print(f"Suggested staff: {staff}")
-                    except ValueError:
-                        print("Please enter a valid number")
+                #     tickets = input("Enter expected tickets sold: ")
+                #     try:
+                #         tickets = int(tickets)
+                #         staff = suggest_staff(tickets)
+                #         print(f"Suggested staff: {staff}")
+                #     except ValueError:
+                #         print("Please enter a valid number")
 
-                elif help_choice == "3":
+                elif help_choice == "2":
                     events = session.query(Event).all()
                     if events:
                         for e in events:
@@ -178,7 +173,7 @@ def main():
                     else:
                         print("No events found.")
 
-                elif help_choice == "4":
+                elif help_choice == "3":
                     show_best_selling_event()
 
                 else:                

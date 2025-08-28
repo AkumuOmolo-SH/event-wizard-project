@@ -219,8 +219,7 @@ def find_safety_by_event_id():
 
 # SUGGESTIONS
 
-def suggest_location(expected_attendees):
-    """Suggest the smallest location that can fit the expected attendees."""
+def suggest_location_for_attendees(expected_attendees):
     locations = session.query(Location).order_by(Location.capacity).all()
     for loc in locations:
         if loc.capacity >= expected_attendees:
@@ -228,11 +227,10 @@ def suggest_location(expected_attendees):
     return None
 
 
-def suggest_staff(expected_attendees):
-    """Suggest staff requirements based on expected attendees."""
-    security_staff = max(15, expected_attendees // 900)  # example: 1 guard per 100
-    ambulances = max(1, expected_attendees // 500)     # example: 1 ambulance per 500
-    return {"security_staff": security_staff, "ambulances": ambulances}
+# def suggest_staff(expected_attendees):
+#     security_staff = max(15, expected_attendees // 900)  
+#     ambulances = max(1, expected_attendees // 500)     
+#     return {"security_staff": security_staff, "ambulances": ambulances}
 
 
 
