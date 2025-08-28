@@ -4,7 +4,7 @@ from lib.helpers import (
     create_location, update_location, delete_location,
     list_events, find_event_by_id, find_event_by_name,
     create_event, update_event, delete_event,
-    list_safety, create_safety, find_safety_by_event_id,
+    list_safety, create_safety, update_safety, delete_safety, find_safety_by_event_id,
     suggest_location_for_attendees,
     show_best_selling_event,
     exit_program
@@ -50,6 +50,8 @@ def safety_menu():
     print("1. List safety measures for all events")
     print("2. New safety measure")
     print("3. Find safety measure by event")
+    print("4. Update a safety measure")
+    print("5. Delete a safety measure")
     print("0. Back")
 
 
@@ -130,14 +132,17 @@ def main():
                     create_safety()
                 elif saf_choice == "3":
                     find_safety_by_event_id()
+                elif saf_choice == "4":
+                    update_safety()
+                elif saf_choice == "5":
+                    delete_safety()
                 else:
                     print("Invalid choice")
 
-                    
         elif choice == "4":
             while True:
                 helpers_menu()
-                
+
                 help_choice = input("Select:").strip()
                 if help_choice == "0":
                     break
@@ -149,14 +154,14 @@ def main():
                         suggested = suggest_location_for_attendees(tickets)
                         if suggested:
                             print(f"Suggested locations: {suggested}")
- 
+
                         else:
-                             print("No suitable location")
+                            print("No suitable location")
                     except ValueError:
                         print("Please enter another number")
 
                 # elif help_choice == "2":
-                    
+
                 #     tickets = input("Enter expected tickets sold: ")
                 #     try:
                 #         tickets = int(tickets)
@@ -176,9 +181,9 @@ def main():
                 elif help_choice == "3":
                     show_best_selling_event()
 
-                else:                
+                else:
                     print("Invalid choice")
-  
+
         else:
             print("Invalid choice")
 

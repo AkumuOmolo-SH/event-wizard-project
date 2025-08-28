@@ -198,14 +198,49 @@ def list_safety():
 
 def create_safety():
     event_id = int(input("Enter Event ID: "))
-    trained_staff = int(input("Enter trained staff count: "))
+    security_staff = int(input("Enter staff count: "))
     ambulances = int(input("Enter number of ambulances: "))
     nurses = int(input("Enter number of nurses: "))
-    rule = Safety(event_id=event_id, trained_staff=trained_staff,
+    rule = Safety(event_id=event_id, security_staff=security_staff,
                   ambulances=ambulances, nurses=nurses)
     session.add(rule)
     session.commit()
     print(f"Created safety rule: {rule}")
+
+def update_safety():
+    event_id = int(input("Enter event ID to update safety info: "))
+    rule = session.query(Safety).filter(Safety.event_id == event_id).first()
+    if not rule:
+        print(f"No safety info for event ID{event_id}")
+        return
+
+    print(f"Current safety info: {rule}")
+    security_staff = input(f"Enter new security staff count (current {rule.security_staff}): ")
+    ambulances = input(f"Enter new ambulances count (current {rule.ambulances}): ")
+    nurses = input(f"Enter new nurses count (current {rule.nurses}): ")
+
+    if security_staff.strip():
+        rule.security_staff = int(security_staff)
+    if ambulances.strip():
+        rule.ambulances = int(ambulances)
+    if nurses.strip():
+        rule.nurses = int(nurses)
+
+    session.commit()
+    print(f"Updated safety info: {rule}")
+
+
+
+def delete_safety():
+    event_id = int(input("Enter event ID to delete: "))
+    rule = session.query(Safety).filter(Safety.event_id == event_id).first()
+    if rule:
+        session.delete(rule)
+        session.commit()
+        print(f"Deleted safety info for event ID:{event_id}")
+    else:
+        print(f"No safety info found for event {event_id}")
+    
 
 
 def find_safety_by_event_id():
@@ -217,7 +252,7 @@ def find_safety_by_event_id():
         print(f"No safety info for location {event_id}")
 
 
-# SUGGESTIONS
+# SUGGESTIONS/QUICK ACTIONS
 
 def suggest_location_for_attendees(expected_attendees):
     locations = session.query(Location).order_by(Location.capacity).all()
@@ -231,8 +266,6 @@ def suggest_location_for_attendees(expected_attendees):
 #     security_staff = max(15, expected_attendees // 900)  
 #     ambulances = max(1, expected_attendees // 500)     
 #     return {"security_staff": security_staff, "ambulances": ambulances}
-
-
 
 # EXIT
 
