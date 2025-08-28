@@ -1,17 +1,15 @@
+from alembic import context
+from lib.event_wizard_db import Base
+from sqlalchemy import pool
+from sqlalchemy import engine_from_config
 from logging.config import fileConfig
 import sys
 import os
 
-from lib.models import Location, Event, Attendee, Safety
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "lib")))
+from lib.models import Location, Event, Safety
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "..", "lib")))
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-from lib.event_wizard_db import Base
-
-
-
-from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

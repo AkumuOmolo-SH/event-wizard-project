@@ -16,7 +16,6 @@ class Location(Base):
 
     events = relationship("Event", back_populates="location")
    
-
     @validates("name")
     def validate_name(self, key, value):
         if not value or not value.strip():
