@@ -24,23 +24,8 @@ class Safety(Base):
 
     @validates("ambulances", "nurses", "security_staff")
     def validate_non_negative(self, key, value):
-        if not isinstance(value, int) or value < 0:
+        if not isinstance(value, int):
             raise ValueError(f"{key} must be a positive number")
+        if value < 0:
+            raise ValueError(f"❌ {key} cannot be negative")
         return value
-
-    @staticmethod
-    def suggest_staff(expected_attendees):
-        expected_attendees = int(expected_attendees)
-
-        security_staff = max(15, expected_attendees // 100)
-        nurses = max(6, expected_attendees // 500)
-        ambulances = max(2, expected_attendees // 500)
-
-        return {
-            "For" :expected_attendees, 
-            "security_staff": security_staff, 
-            "nurses": nurses, 
-            "ambulances": ambulances
-            }
-    
-

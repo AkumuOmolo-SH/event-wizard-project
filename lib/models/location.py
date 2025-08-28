@@ -25,13 +25,13 @@ class Location(Base):
     @validates("capacity")
     def validate_capacity(self, key, value):
         if not isinstance(value, int) or value <= 0:
-            raise ValueError("Capacity must be a positive integer")
+            raise ValueError("Capacity must be a positive number")
         return value
 
     @validates("num_bars", "num_toilets")
     def validate_non_negative(self, key, value):
-        if value < 0:
-            raise ValueError(f"{key} cannot be negative")
+        if not isinstance(value, int) or value < 0:
+            raise ValueError(f"{key} cannot be negative number")
         return value
 
     @classmethod
