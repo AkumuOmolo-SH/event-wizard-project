@@ -20,7 +20,7 @@ def main_menu():
     print(title)
     print("=" * len(title) + "\n")
 
-    print("\nNavigation Instructions:")
+    print("\n===== Navigation Instructions =====")
     print("Use the numbers in the menu to select an option. Press enter to confirm.")
     print("To cancel an action, leave the input empty and press Enter.")
 
@@ -36,18 +36,18 @@ def main_menu():
 
 
 def location_menu():
-    print("\n--- Locations Menu ---")
+    print(f"{CYAN}\n--- Locations Menu ---")
     print("1. List all locations")
     print("2. Find location by name")
     print("3. Find location by ID")
     print("4. Create a location")
     print("5. Update a location")
     print("6. Delete a location")
-    print("0. Back to main menu")
+    print("0. Back to main menu"+ RESET)
 
 
 def event_menu():
-    print("\n--- Events Menu ---")
+    print(f"{CYAN}\n--- Events Menu ---")
     print("1. List all events")
     print("2. Find event by name")
     print("3. Find event by ID")
@@ -55,24 +55,24 @@ def event_menu():
     print("5. Update an event")
     print("6. Delete an event")
     print("7. Show best-selling event")
-    print("0. Back to main menu")
+    print("0. Back to main menu"+ RESET)
 
 
 def safety_menu():
-    print("\n--- Safety Measures Menu ---")
+    print(f"{CYAN}\n--- Safety Measures Menu ---")
     print("1. List safety measures for all events")
     print("2. Create new safety measure")
     print("3. Update safety measure")
     print("4. Delete safety measure")
     print("5. Find safety measure by event")
-    print("0. Back to main menu")
+    print("0. Back to main menu"+ RESET)
 
 
 def helpers_menu():
-    print("\n--- Quick Suggestions ---")
+    print(f"{CYAN}\n--- Quick Actions ---")
     print("1. Suggest location for expected attendees")
     print("2. Show attendees per event")
-    print("0. Back to main menu")
+    print("0. Back to main menu"+ RESET)
 
 
 def pause():
