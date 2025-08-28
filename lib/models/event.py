@@ -30,6 +30,9 @@ class Event(Base):
     def validate_tickets(self, key, value):
         if not isinstance(value, int) or value < 0:
             raise ValueError("Tickets sold must be a non-negative integer")
+        if value < 0:
+            raise ValueError("Tickets sold cannot be negative")
+
         return value
     
     @classmethod
