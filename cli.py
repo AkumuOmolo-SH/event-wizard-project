@@ -11,19 +11,28 @@ from lib.helpers import (
 )
 from lib.event_wizard_db import session
 from lib.models.event import Event
-
+RESET = "\033[0m"
+CYAN = "\033[36m"
 
 def main_menu():
-    print("\n--- EVENT WIZARD CLI ---")
-    print("\n Navigation Instructions:")
-    print("Use the numbers in the menu to select an option. Press enter to confirm.")
-    print("\n--- Main Menu ---")
+    title =  "EVENT WIZARD"
+    print("\n" + "=" * len(title))
+    print(title)
+    print("=" * len(title) + "\n")
 
-    print("1. Locations")
+    print("\nNavigation Instructions:")
+    print("Use the numbers in the menu to select an option. Press enter to confirm.")
+    print("To cancel an action, leave the input empty and press Enter.")
+
+    menu_title = "MAIN MENU"
+    print(menu_title)
+    print("-" * len(menu_title) + "\n")
+
+    print(f"{CYAN}1. Locations")
     print("2. Events")
     print("3. Safety")
     print("4. Quick Actions")
-    print("0. Exit")
+    print("0. Exit"+ RESET)
 
 
 def location_menu():
