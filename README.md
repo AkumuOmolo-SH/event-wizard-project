@@ -86,32 +86,116 @@ pip install -r requirements.txt
 python seed.py
 
 ---
-Usage:
+**## Repository struture**
+
+``
+event-wizard-project/
+│
+├── alembic/
+│   ├── versions/
+│   └── env.py
+│
+├── lib/
+│   ├── models/
+│   │   ├── event.py
+│   │   ├── location.py
+│   │   └── safety.py
+│   └── __init__.py
+│
+├── .gitignore
+├── cli.py
+├── event_wizard_db.py
+├── requirements.txt
+├── README.md
+└── venv/
+``
+
+---
+
+**## Usage**
 
 Run the CLI:
 
 python cli.py
 
-Follow the prompts to manage locations, events, attendees, and safety rules.
+Follow the prompts in the main menu to manage locations, events, and safety rules.
 
-Example:
+You are presented with a main menu. You navigate by entering the number corresponding to each option.
 
-1. Create Location
-2. List Locations
-3. Create Event
-...
-0. Exit
+**##.Main Menu Options**
+
+*1. Locations*
+
+List Locations: Displays all stored locations in a table.
+
+Find by ID: Retrieve a location by its unique ID.
+
+Find by Name: Search for a location by name.
+
+Create Location: Add a new location with capacity, number of bars, and toilets.
+
+Update Location: Modify an existing location’s details.
+
+Delete Location: Remove a location from the database.
+
+*2. Events*
+
+List Events: Show all events.
+
+Find by ID / Name: Search for events using ID or name.
+
+Create Event: Add a new event by specifying name, tickets sold, and location.
+
+Update Event: Edit an event’s details.
+
+Delete Event: Remove an event.
+
+Best-Selling Event: Displays the event with the highest ticket sales.
+
+*3.Safety*
+
+List Safety Rules/Measures: Displays all safety rules linked to events.
+
+Create Safety Rule: Add security staff, ambulances, and nurses for a specific event.
+
+Update Safety Rule: Modify existing safety information.
+
+Delete Safety Rule: Remove safety information.
+
+Find Safety by Event ID: Retrieve safety info for a specific event.
+
+*4.Helpers / Quick Actions*
+
+Suggest Location: Input tickets sold and the CLI recommends a suitable location.
+
+Event Ticket Overview: Displays all events with their current tickets sold.
+
+*5.Exit*
+
+---
+
+**##Workflow**
+
+1. Select a menu option by entering its corresponding number.
+
+2. Input prompts guide you through each operation.
+
+3. Tables are displayed using tabulate for readability.
+
+4. Invalid inputs trigger error messages.
+
+5. After completing an action, press Enter to return to the previous menu or main menu.
 
 **## Preview**
+---
 <img width="1857" height="954" alt="Screenshot from 2025-08-29 03-56-14" src="https://github.com/user-attachments/assets/5964688c-6222-4800-bab4-1b31bfbabd71" />
-
+---
 
 **###  Author**
 
 **Akumu Omolo**  
 GitHub: [@AkumuOmolo-SH](https://github.com/AkumuOmolo-SH)
 
----
 
 **### License**
 
