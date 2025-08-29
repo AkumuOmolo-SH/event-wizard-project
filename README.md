@@ -14,7 +14,6 @@ The application is ideal for organizers who need a platform to record stats and 
 2. Track capacity, and resources
 
 - Assess a location's capacity by number of attendees with tickets sold
-- 
 - Log a location's resources e.g no. of toilets
 
 3. Events Management
