@@ -27,5 +27,5 @@ class Safety(Base):
         if not isinstance(value, int):
             raise ValueError(f"{key} must be a positive number")
         if value < 0:
-            raise ValueError(f"❌ {key} cannot be negative")
+            raise ValueError(f"{key} cannot be negative")
         return value

@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 from lib.helpers import (
     list_locations, find_location_by_id, find_location_by_name,
-    create_location, choose_location, update_location, delete_location,
+    create_location, update_location, delete_location,
     list_events, find_event_by_id, find_event_by_name,
     create_event, update_event, delete_event,
     list_safety, create_safety, update_safety, delete_safety, find_safety_by_event_id,
@@ -11,18 +11,25 @@ from lib.helpers import (
 )
 from lib.event_wizard_db import session
 from lib.models.event import Event
+from tabulate import tabulate
+
 RESET = "\033[0m"
 CYAN = "\033[36m"
 
+
 def main_menu():
-    title =  "EVENT WIZARD"
+    title = "EVENT WIZARD"
     print("\n" + "=" * len(title))
     print(title)
     print("=" * len(title) + "\n")
 
+    print("Welcome to Event Wizard. Your go to platform for organizing, analyzing and managing events.")
+    print("Let's get started!")
+
     print("\n===== Navigation Instructions =====")
     print("Use the numbers in the menu to select an option. Press enter to confirm.")
     print("To cancel an action, leave the input empty and press Enter.")
+    print("\n")
 
     menu_title = "MAIN MENU"
     print(menu_title)
@@ -32,7 +39,7 @@ def main_menu():
     print("2. Events")
     print("3. Safety")
     print("4. Quick Actions")
-    print("0. Exit"+ RESET)
+    print("0. Exit" + RESET)
 
 
 def location_menu():
@@ -43,7 +50,7 @@ def location_menu():
     print("4. Create a location")
     print("5. Update a location")
     print("6. Delete a location")
-    print("0. Back to main menu"+ RESET)
+    print("0. Back to main menu" + RESET)
 
 
 def event_menu():
@@ -55,7 +62,7 @@ def event_menu():
     print("5. Update an event")
     print("6. Delete an event")
     print("7. Show best-selling event")
-    print("0. Back to main menu"+ RESET)
+    print("0. Back to main menu" + RESET)
 
 
 def safety_menu():
@@ -65,14 +72,14 @@ def safety_menu():
     print("3. Update safety measure")
     print("4. Delete safety measure")
     print("5. Find safety measure by event")
-    print("0. Back to main menu"+ RESET)
+    print("0. Back to main menu" + RESET)
 
 
 def helpers_menu():
     print(f"{CYAN}\n--- Quick Actions ---")
     print("1. Suggest location for expected attendees")
     print("2. Show attendees per event")
-    print("0. Back to main menu"+ RESET)
+    print("0. Back to main menu" + RESET)
 
 
 def pause():
@@ -180,26 +187,27 @@ def main():
                         tickets = int(tickets)
                         loc = suggest_location_for_attendees(tickets)
                         if loc:
-                            print(f"Suggested location: {loc}")
+                            print(f"Suggested location:")
+                            print(tabulate([(loc.id, loc.name, loc.capacity, loc.num_bars, loc.num_toilets)], headers=("ID", "Name", "Capacity", "Bars", "Toilets"), tablefmt="fancy_grid"
+                                           ))
                         else:
                             print(
                                 "No location can accommodate this number of attendees.")
                     except ValueError:
                         print("Please enter a valid number")
                     pause()
+
                 elif help_choice == "2":
                     events = session.query(Event).all()
                     if events:
-                        for e in events:
-                            print(f"{e.name}: {e.tickets_sold} tickets sold")
+                        table = [(e.name, e.tickets_sold) for e in events]
+                        print(tabulate(table, headers=("Event Name",
+                              "Tickets Sold"), tablefmt="fancy_grid"))
                     else:
                         print("No events found.")
                     pause()
                 else:
                     print("Invalid choice")
-
-        else:
-            print("Invalid choice")
 
 
 if __name__ == "__main__":
