@@ -48,17 +48,14 @@ The application is ideal for organizers who need a platform to record stats and 
 
 Python 3
 
-SQLAlchemy ORM
- for database interactions
+SQLAlchemy ORM for database interactions
 
-Alembic
- for database migrations
+Alembic for database migrations
 
 SQLite (default local database)
 
 Tabulate
-(optional, for neatly formatted tables in CLI)se
-Pipenv to install Faker to save you some time.
+( for neatly formatted tables in CLI)s
 
 ---
 
